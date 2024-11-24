@@ -1,10 +1,5 @@
 package it.unibo.mvc;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -15,8 +10,15 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  * This class is a simple application that writes a random number on a file.
@@ -42,9 +44,14 @@ public class BadIOGUI {
         final JPanel canvas = new JPanel();
         canvas.setLayout(new BorderLayout());
         final JButton write = new JButton("Write on file");
-        canvas.add(write, BorderLayout.CENTER);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        final JPanel myPanel = new JPanel();
+        myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.X_AXIS));
+        canvas.add(myPanel, BorderLayout.CENTER);
+        myPanel.add(write);
+        final JButton read = new JButton("Read botton");
+        myPanel.add(read);
         /*
          * Handlers
          */
@@ -63,6 +70,21 @@ public class BadIOGUI {
                 } catch (IOException e1) {
                     JOptionPane.showMessageDialog(frame, e1, "Error", JOptionPane.ERROR_MESSAGE);
                     e1.printStackTrace(); // NOPMD: allowed as this is just an exercise
+                }
+            }
+        });
+
+        read.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                try {
+                    final List<String> reader = Files.readAllLines(Paths.get(PATH));
+                    for (final String elem : reader) {
+                        System.out.println(elem);
+                    }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(frame, ex, "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace(); // NOPMD: allowed as this is just an exercise
                 }
             }
         });
@@ -91,6 +113,8 @@ public class BadIOGUI {
          * OK, ready to push the frame onscreen
          */
         frame.setVisible(true);
+
+        frame.pack();
     }
 
     /**
